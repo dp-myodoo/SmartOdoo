@@ -1,0 +1,33 @@
+version: '3.2'
+services:
+  web:
+    image: odoo:${ODOO_VER}
+    container_name: ${ODOO_CONT_NAME}
+    depends_on:
+      - db
+      - smtp4dev
+    ports:
+      - "8069:8069"
+    tty: true
+    volumes:
+      # - ${PROJECT_LOCATION}:/entrypoint.sh
+      - ${PROJECT_LOCATION}/config:/etc/odoo
+      - ${PROJECT_LOCATION}/addons:/mnt/extra-addons
+      - ${PROJECT_LOCATION}/enterprise:/mnt/enterprise
+    restart: on-failure
+  db:
+    image: postgres:${PSQL_VER}
+    container_name: ${PSQL_CONT_NAME}
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+  smtp4dev:
+    image: rnwood/smtp4dev:latest
+    container_name: ${SMTP_CONT_NAME}
+    ports:
+      - "5080:80"
+      - "25:25"
+      - "143:143"
+    restart: always
