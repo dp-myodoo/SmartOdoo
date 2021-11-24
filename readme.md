@@ -2,8 +2,8 @@
 repo name: SmartOdoo
 description: The complete solution to use Odoo images with custom and enterprise addons, additional fake SMTP and create it with one command
 github name: dp-myodoo
-link: https://github.com/dp-myodoo/Odoo-GuideLines/tree/master/odoo_docker
-logo path: 'https://github.com/dp-myodoo/Odoo-GuideLines/blob/master/odoo_docker/descripion/dockerize-icon.png'
+link: https://github.com/dp-myodoo/SmartOdoo
+logo path: 'https://raw.githubusercontent.com/dp-myodoo/SmartOdoo/master/descripion/smartOdoo-icon.png'
 twitter: your_username
 email: dp@myodoo.pl
 -->
@@ -21,21 +21,21 @@ email: dp@myodoo.pl
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-    <a href="https://github.com/dp-myodoo/Odoo-GuideLines/tree/master/odoo_docker/dockerize-icon.png">
-        <img src="'description/dockerize-icon.png'" alt="Logo" width="80" height="80">
+    <a href="https://github.com/dp-myodoo/SmartOdoo">
+        <img src="https://raw.githubusercontent.com/dp-myodoo/SmartOdoo/master/descripion/smartOdoo-icon.png" alt="Logo" width="80" height="80">
     </a>
     <br>
-    <!-- <h3 align="center">https://github.com/dp-myodoo/Odoo-GuideLines/tree/master/odoo_docker</h3> -->
+    <!-- <h3 align="center">https://github.com/dp-myodoo/SmartOdoo</h3> -->
     <h1 align="center">SmartOdoo</h1>
     <p align="center">
-        <a href="https://github.com/dp-myodoo/Odoo-GuideLines/tree/master/odoo_docker"><strong>Explore the docs<strong></a>
+        <a href="https://github.com/dp-myodoo/SmartOdoo"><strong>Explore the docs<strong></a>
         <br />
         <br />
         <!-- <a href="//github.com/SmartOdoo/dp-myodoo">View Demo</a>
         �
-        <a href="https://github.com/dp-myodoo/Odoo-GuideLines/tree/master/odoo_docker/issues">Report Bug</a>
+        <a href="https://github.com/dp-myodoo/SmartOdoo/issues">Report Bug</a>
         �
-        <a href="https://github.com/dp-myodoo/Odoo-GuideLines/tree/master/odoo_docker/issues">Request Feature</a> -->
+        <a href="https://github.com/dp-myodoo/SmartOdoo/issues">Request Feature</a> -->
     </p>
 </p>
 
@@ -49,6 +49,7 @@ email: dp@myodoo.pl
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
+  - [Occupied Ports](#occupied-ports)
 - [Roadmap](#roadmap)
 <!-- * [Contributing](#contributing)
 - [License](#license)
@@ -65,13 +66,13 @@ The provided script add support for oneline compose and build Odoo Complete Solu
 
 Here's why:
 
-- Your time should be focused on creating something amazing. A project that solves a problem and helps others
-- You shouldn't be doing the same tasks over and over like creating a README from scratch
-- You should element DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue.
-
-A list of commonly used resources that I find helpful are listed in the acknowledgements.
+- Store Your Credentials secure with [encpass.sh](https://github.com/plyint/encpass.sh)
+- Use Odoo in version you want
+- Use PSQL in version you want
+- Use local SMPT to test mails send from Odoo
+- Use your own modules
+- Use enterprise if needed (and if you have access :smile: )
+- specify local directory for services data like odoo-config or addons
 
 <!--
 ### Built With
@@ -155,7 +156,12 @@ Usage: ./docker_start.sh -n {project_name} [parameters...]
    -e, --enterprise                    Set for install enterprise modules
 ```
 
-_For more examples, please refer to the [Documentation](https://github.com/dp-myodoo/Odoo-GuideLines/tree/master/odoo_docker)_
+_For more examples, please refer to the [Documentation](https://github.com/dp-myodoo/SmartOdoo)_
+
+### Occupied Ports
+
+- localhost:8069 -- Odoo 
+- localhost:5080 -- SMTP
 
 <!-- ROADMAP -->
 
@@ -196,7 +202,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Your Name - [@dp-myodoo](https://twitter.com/your_username) - dp@dp-myodoo
 
-Project Link: [https://github.com/dp-myodoo/Odoo-GuideLines/tree/master/odoo_docker](https://github.com/dp-myodoo/Odoo-GuideLines/tree/master/odoo_docker)
+Project Link: [https://github.com/dp-myodoo/SmartOdoo](https://github.com/dp-myodoo/SmartOdoo)
 
  -->
 
