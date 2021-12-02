@@ -23,6 +23,8 @@ services:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
       - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ${PROJECT_LOCATION}/psql:/var/lib/postgresql/data/pgdata
   smtp4dev:
     image: rnwood/smtp4dev:latest
     container_name: ${SMTP_CONT_NAME}
