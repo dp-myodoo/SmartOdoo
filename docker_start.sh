@@ -64,8 +64,32 @@ clone_enterprise() {
     fi
 }
 
+delete_project() {
+    echo "DELETING PROJECT"
+    # stop containers
+    echo "stoping containers"
+    docker container stop "${PROJECT_NAME}-web" "${PROJECT_NAME}-db" "${PROJECT_NAME}-smtp"
+    # save id's of volumes 
+    VOLUMES="$(docker inspect -f "{{range .Mounts}}{{.Name}}{{end}}" ${PROJECT_NAME}-db ${PROJECT_NAME}-web ${PROJECT_NAME}-smtp)"
+    # remove containers
+    echo "deleting containers"
+    docker container rm "${PROJECT_NAME}-web" "${PROJECT_NAME}-db" "${PROJECT_NAME}-smtp"
+    # remove volumes
+    echo "deleting volumes"
+    for i in "${VOLUMES}"; do
+        docker volume rm $i
+    done
+    sudo rm -r ${PROJECT_FULLPATH}
+
+}
+
 project_exist() {
-    echo "PROJECT EXIST"
+    if [ ! -z "${DELETE}" ]; then
+        delete_project
+        exit 1
+    else
+        echo "PROJECT EXIST"
+    fi
 }
 
 create_project() {
@@ -94,7 +118,10 @@ create_project_directiories() {
 check_project() {
     PROJECT_FULLPATH="$PROJECTS_DIR""$PROJECT_NAME"
     if [ -d "${PROJECT_FULLPATH}" ]; then
-        echo "Project Exist"
+        project_exist
+    elif [ ! -z "${DELETE}" ]; then
+        echo "PROJECT DESN'T EXIST"
+        exit 1
     else
         create_project_directiories
         create_project
@@ -169,7 +196,8 @@ display_help() {
     echo "   -p, --psql                     (N)  Set version of postgreSQL "
     echo "   -a, --addons                   (N)  Set addons repository HTTPS url"
     echo "   -b, --branch                   (N)  Set addons repository branch"
-    echo "   -e, --enterprise                    Set for install enterprise modules "
+    echo "   -e, --enterprise                    Set for install enterprise modules"
+    echo "   -d, --delete                        Delete project if exist"
 
     echo
     # echo some stuff here for the -a or --add-options
@@ -180,7 +208,7 @@ display_help() {
 # Process the input options. Add options as needed.        #
 ############################################################
 
-PARSED_ARGS=$(getopt -a -o n:o:p:a:b:eh -l name:,odoo:,psql:,addons:,branch:,enterprise,help -- "$@")
+PARSED_ARGS=$(getopt -a -o n:o:p:a:b:edh -l name:,odoo:,psql:,addons:,branch:,enterprise,delete,help -- "$@")
 VALID_ARGS=$?
 if [ "$VALID_ARGS" != "0" ]; then
     display_help
@@ -211,6 +239,10 @@ while :; do
         ;;
     -e | --enterprise)
         INSTALL_ENTERPRISE_MODULES='T'
+        shift
+        ;;
+    -d | --delete)
+        DELETE='T'
         shift
         ;;
     -h | --help)
