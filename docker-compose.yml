@@ -10,7 +10,7 @@ services:
       - "8069:8069"
     tty: true
     volumes:
-      # - ${PROJECT_LOCATION}:/entrypoint.sh
+      - ${PROJECT_LOCATION}/entrypoint.sh:/entrypoint.sh
       - ${PROJECT_LOCATION}/config:/etc/odoo
       - ${PROJECT_LOCATION}/addons:/mnt/extra-addons
       - ${PROJECT_LOCATION}/enterprise:/mnt/enterprise
@@ -32,4 +32,5 @@ services:
       - "5080:80"
       - "25:25"
       - "143:143"
+    hostname: smtp4dev_odoo
     restart: always
