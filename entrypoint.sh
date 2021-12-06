@@ -11,7 +11,9 @@ set -e
 
 # install python packages
 pip3 install pip --upgrade
-pip3 install -r /mnt/extra-addons/requirements.txt
+if [[ -f "/mnt/extra-addons/requirements.txt" ]]; then
+    pip3 install -r /mnt/extra-addons/requirements.txt
+fi
 
 # sed -i 's|raise werkzeug.exceptions.BadRequest(msg)|self.jsonrequest = {}|g' /usr/lib/python3/dist-packages/odoo/http.py
 
