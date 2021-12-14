@@ -65,21 +65,28 @@ clone_enterprise() {
 }
 
 delete_project() {
-    echo "DELETING PROJECT"
-    # stop containers
-    echo "stoping containers"
-    docker container stop "${PROJECT_NAME}-web" "${PROJECT_NAME}-db" "${PROJECT_NAME}-smtp"
-    # save id's of volumes 
-    VOLUMES="$(docker inspect -f "{{range .Mounts}}{{.Name}}{{end}}" ${PROJECT_NAME}-db ${PROJECT_NAME}-web ${PROJECT_NAME}-smtp)"
-    # remove containers
-    echo "deleting containers"
-    docker container rm "${PROJECT_NAME}-web" "${PROJECT_NAME}-db" "${PROJECT_NAME}-smtp"
-    # remove volumes
-    echo "deleting volumes"
-    for i in "${VOLUMES}"; do
-        docker volume rm $i
-    done
+    echo "DELETING PROJECT AND VOLUMES"
+    (cd $PROJECT_FULLPATH; docker-compose down -v)
+    echo "DELETING PROJECT DIRECTORY"
     sudo rm -r ${PROJECT_FULLPATH}
+
+}
+
+project_start() {
+    # Find project in running containers and start or restart
+    RUNNING_CONTAINERS="$(docker ps)"
+    # echo "$RUNNING_CONTAINERS" | wc -l
+    if [[ $RUNNING_CONTAINERS == *"$PROJECT_NAME"* ]]; then
+        echo "RESTARTING $PROJECT_NAME"
+        (cd $PROJECT_FULLPATH; docker-compose restart)
+    else
+        echo "UPDATE GIT REPO"
+        git -C "${PROJECT_FULLPATH}/addons" stash
+        git -C "${PROJECT_FULLPATH}/addons" pull
+        git -C "${PROJECT_FULLPATH}/addons" stash pop
+        echo "STARTING $PROJECT_NAME"
+        (cd $PROJECT_FULLPATH; docker-compose start)
+    fi
 
 }
 
@@ -88,7 +95,7 @@ project_exist() {
         delete_project
         exit 1
     else
-        echo "PROJECT EXIST"
+        project_start
     fi
 }
 
