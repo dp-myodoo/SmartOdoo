@@ -15,6 +15,9 @@ if [[ -f "/mnt/extra-addons/requirements.txt" ]]; then
     pip3 install -r /mnt/extra-addons/requirements.txt
 fi
 
+# install debugpy package for debugging
+pip3 install debugpy
+
 # sed -i 's|raise werkzeug.exceptions.BadRequest(msg)|self.jsonrequest = {}|g' /usr/lib/python3/dist-packages/odoo/http.py
 
 DB_ARGS=()

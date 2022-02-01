@@ -87,7 +87,6 @@ project_start() {
         echo "STARTING $PROJECT_NAME"
         (cd $PROJECT_FULLPATH; docker-compose start)
     fi
-
 }
 
 project_exist() {
@@ -104,6 +103,7 @@ create_project() {
     cp -r ./config/* "${PROJECT_FULLPATH}/config/"
     cp -r ./docker-compose.yml "${PROJECT_FULLPATH}/"
     cp -r ./entrypoint.sh "${PROJECT_FULLPATH}/"
+    cp -r ./launch.json "${PROJECT_FULLPATH}/.vscode/"
     clone_addons
     if [ ! -z "${INSTALL_ENTERPRISE_MODULES}" ]; then
         clone_enterprise
@@ -120,6 +120,7 @@ create_project_directiories() {
     mkdir -p "$PROJECT_FULLPATH/addons"
     mkdir -p "$PROJECT_FULLPATH/enterprise"
     mkdir -p "$PROJECT_FULLPATH/config"
+    mkdir -p "${PROJECT_FULLPATH}/.vscode"
 }
 
 check_project() {
