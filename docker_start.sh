@@ -89,10 +89,29 @@ project_start() {
     fi
 }
 
+run_unit_tests(){
+    if [ -z TEST_DB ] || [ "$TEST_DB" == "" ]; then
+        echo "You need to specify database to run tests on. Use --db."
+        display_help
+    fi
+    if [ -v TEST_MODULE ]; then
+        echo "START ODOO UNIT TESTS ON ($TEST_DB) DB FOR ($TEST_MODULE) MODULE"
+        (cd $PROJECT_FULLPATH; docker-compose run --rm web --test-enable --log-level=test --stop-after-init -d ${TEST_DB} -i ${TEST_MODULE})
+    elif [ -v TEST_TAGS ]; then
+        echo "START ODOO UNIT TESTS ON ($TEST_DB) DB FOR ($TEST_TAGS) TAGS"
+        (cd $PROJECT_FULLPATH; docker-compose run --rm web --test-enable --log-level=test --stop-after-init -d ${TEST_DB} --test-tags=${TEST_TAGS})
+    else
+        echo "You need to specify module or tags. Use -m or --tags"
+        display_help
+    fi
+}
+
 project_exist() {
     if [ ! -z "${DELETE}" ]; then
         delete_project
         exit 1
+    elif [ ! -z "${TEST}" ]; then
+        run_unit_tests
     else
         project_start
     fi
@@ -195,6 +214,8 @@ display_help() {
     echo "   Examples:"
     echo "   $0 -n Test_Project -e -o 14.0 -p 12" >&2
     echo "   $0 -n Test_Project" >&2
+    echo "   $0 -n Test_Project -t --db=test_db -m my_module " >&2
+    echo "   $0 -n Test_Project -t --db=test_db --tags=my_tag,my_tag2 " >&2
     echo
     echo "   (M) --> Mandatory parameter "
     echo "   (N) --> Need parameter "
@@ -206,6 +227,10 @@ display_help() {
     echo "   -b, --branch                   (N)  Set addons repository branch"
     echo "   -e, --enterprise                    Set for install enterprise modules"
     echo "   -d, --delete                        Delete project if exist"
+    echo "   -t, --test                          Run tests."
+    echo "   -m, --module                   (N)  Module to test"
+    echo "       --tags                     (N)  Tags to test"
+    echo "       --db                       (N)  Database to test on"
 
     echo
     # echo some stuff here for the -a or --add-options
@@ -216,7 +241,7 @@ display_help() {
 # Process the input options. Add options as needed.        #
 ############################################################
 
-PARSED_ARGS=$(getopt -a -o n:o:p:a:b:edh -l name:,odoo:,psql:,addons:,branch:,enterprise,delete,help -- "$@")
+PARSED_ARGS=$(getopt -a -o n:o:p:a:b:m:edth -l name:,odoo:,psql:,addons:,branch:,module:,db:,tags:,enterprise,delete,test,help -- "$@")
 VALID_ARGS=$?
 if [ "$VALID_ARGS" != "0" ]; then
     display_help
@@ -252,6 +277,22 @@ while :; do
     -d | --delete)
         DELETE='T'
         shift
+        ;;
+    -t | --test)
+        TEST='T'
+        shift
+        ;;
+    -m | --module)
+        TEST_MODULE="$2"
+        shift 2
+        ;;
+    --db)
+        TEST_DB="$2"
+        shift 2
+        ;;
+    --tags)
+        TEST_TAGS="$2"
+        shift 2
         ;;
     -h | --help)
         display_help
