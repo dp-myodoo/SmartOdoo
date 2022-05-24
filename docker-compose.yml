@@ -37,4 +37,4 @@ services:
       - "25:25"
       - "143:143"
     hostname: smtp4dev_odoo
-    restart: always
+    restart: on-failure
