@@ -106,12 +106,34 @@ run_unit_tests(){
     fi
 }
 
+rebuild_container(){
+    if [ -z CONTAINER_NAME ] || [ "$CONTAINER_NAME" == "" ]; then
+        echo "You need to specify container name that you want to rebuild. Use -r or --rebuild"
+        display_help
+    fi
+    (cd $PROJECT_FULLPATH; docker-compose up -d --no-deps --force-recreate --build "$CONTAINER_NAME")
+}
+
+install_and_rebuild(){
+    # TODO: Install module
+    if [ -z INSTALL_MODULE ] || [ "$INSTALL_MODULE" == "" ]; then
+        echo "You need to specify modue name that you want to install. Use --install"
+        display_help
+    fi
+    (cd $PROJECT_FULLPATH; docker-compose up -d --no-deps --force-recreate --build "$CONTAINER_NAME")
+
+}
+
 project_exist() {
     if [ ! -z "${DELETE}" ]; then
         delete_project
         exit 1
     elif [ ! -z "${TEST}" ]; then
         run_unit_tests
+    elif [ ! -z "${CONTAINER_NAME}" ]; then
+        rebuild_container
+    elif [ ! -z "${INSTALL_MODULE}" ]; then
+        install_and_rebuild
     else
         project_start
     fi
@@ -227,10 +249,12 @@ display_help() {
     echo "   -b, --branch                   (N)  Set addons repository branch"
     echo "   -e, --enterprise                    Set for install enterprise modules"
     echo "   -d, --delete                        Delete project if exist"
+    echo "   -r, --rebuild                  (N)  Rebuild container in project with given name"
     echo "   -t, --test                          Run tests."
     echo "   -m, --module                   (N)  Module to test"
     echo "       --tags                     (N)  Tags to test"
     echo "       --db                       (N)  Database to test on"
+    echo "       --install                  (N)  Rebuild web container and install given module"
 
     echo
     # echo some stuff here for the -a or --add-options
@@ -241,7 +265,7 @@ display_help() {
 # Process the input options. Add options as needed.        #
 ############################################################
 
-PARSED_ARGS=$(getopt -a -o n:o:p:a:b:m:edth -l name:,odoo:,psql:,addons:,branch:,module:,db:,tags:,enterprise,delete,test,help -- "$@")
+PARSED_ARGS=$(getopt -a -o n:o:p:a:b:m:r:edth -l name:,odoo:,psql:,addons:,branch:,module:,db:,tags:,rebuild:,install:,enterprise,delete,test,help -- "$@")
 VALID_ARGS=$?
 if [ "$VALID_ARGS" != "0" ]; then
     display_help
@@ -284,6 +308,15 @@ while :; do
         ;;
     -m | --module)
         TEST_MODULE="$2"
+        shift 2
+        ;;
+    -r | --rebuild)
+        CONTAINER_NAME="$2"
+        shift 2
+        ;;
+    --install)
+        CONTAINER_NAME="web"
+        INSTALL_MODULE="$2"
         shift 2
         ;;
     --db)
