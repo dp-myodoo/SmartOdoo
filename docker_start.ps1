@@ -38,7 +38,8 @@ param(
 # Variables
 # $ODOO_VER="15.0"
 # $PSQL_VER="13"
-$PROJECTS_DIR=(Get-Location) -replace "SmartOdoo", "DockerProjects"
+$RUN_LOCATION = Get-Location
+$PROJECTS_DIR=$PSScriptRoot -replace "SmartOdoo", "DockerProjects"
 # Odoo
 $ODOO_GITHUB_NAME="odoo"
 $ODOO_ENTERPRISE_REPOSITORY="enterprise"
@@ -153,6 +154,7 @@ function project_exist {
     if ( $DELETE_PROJECT )
     {
         delete_project
+        Set-Location $RUN_LOCATION
         exit 1
     }
     elseif ( $RUN_TEST )
@@ -193,6 +195,7 @@ function create_project_directiories {
 }
 
 function check_project {
+    Set-Location $PSScriptRoot
     $PROJECT_FULLPATH="$PROJECTS_DIR\$PROJECT_NAME"
     if ( Test-Path $PROJECT_FULLPATH )
     {
@@ -201,6 +204,7 @@ function check_project {
     elseif ( $DELETE_PROJECT )
     {
         Write-Output "PROJECT DESN'T EXIST"
+        Set-Location $RUN_LOCATION
         exit 1
     }
     else
@@ -325,6 +329,7 @@ function display_help {
     Write-Output "    -database                 (N)  Database to test on"
 
     # echo some stuff here for the -a or --add-options
+    Set-Location $RUN_LOCATION
     exit 2
 }
 
@@ -351,6 +356,7 @@ if ( $null -eq $PROJECT_NAME )
 {
     Write-Output "ERROR Need to specify project name."
     display_help
+    Set-Location $RUN_LOCATION
     exit 2
 }
 

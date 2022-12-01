@@ -11,7 +11,7 @@ services:
     ports:
       - "8069:8069"
       - "5858:5858"
-    command: /usr/bin/python3 -m debugpy --listen 0.0.0.0:5858 /usr/bin/odoo --db_user=odoo --db_host=db --db_password=odoo -c /etc/odoo/odoo.conf
+    command: /usr/bin/python3 -m debugpy --listen 0.0.0.0:5858 /usr/bin/odoo --db_user=odoo --db_host=db --db_password=odoo -c /etc/odoo/odoo.conf --dev reload
     tty: true
     volumes:
       - ${PROJECT_LOCATION}/entrypoint.sh:/entrypoint.sh
